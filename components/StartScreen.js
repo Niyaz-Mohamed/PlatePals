@@ -6,9 +6,8 @@ import {
   View,
 } from "react-native";
 import globalSettings from "../global";
-import { SafeAreaView } from "react-native";
 
-export const StartScreen = ({ navigation }) => {
+export default function StartScreen({ navigation }) {
   return (
     <ImageBackground
       source={require("../assets/bento.png")}
@@ -38,7 +37,7 @@ export const StartScreen = ({ navigation }) => {
       </View>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
   image: { width: "100%", flex: 1, alignItems: "center" },

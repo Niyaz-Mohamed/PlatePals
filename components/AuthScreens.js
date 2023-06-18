@@ -1,15 +1,31 @@
+// Import modules
 import React, { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+// Import firebase and globals
 import globalSettings from "../global";
+import { auth } from "../firebase";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
-export const LoginScreen = () => {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+// Login with email and password
+export const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorText, setErrorText] = useState("");
 
-  function registerUser() {
-    console.log(username, password);
+  async function loginUser() {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigation.navigate("Home");
+    } catch (error) {
+      error = JSON.parse(JSON.stringify(error))["code"].split("/")[1];
+      console.log(error);
+      setErrorText(error);
+    }
   }
 
   return (
@@ -18,9 +34,9 @@ export const LoginScreen = () => {
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
       ></TextInput>
       <TextInput
         style={styles.input}
@@ -31,32 +47,49 @@ export const LoginScreen = () => {
       ></TextInput>
       <Pressable
         style={styles.button}
-        onPress={registerUser}
+        onPress={loginUser}
         android_ripple={{ color: globalSettings.accentColor }}
       >
         <Text style={styles.buttonText}>Submit</Text>
       </Pressable>
+      <Text style={styles.error}>
+        {errorText === "" ? "" : errorText.toString()}
+      </Text>
     </SafeAreaView>
   );
 };
 
-export const SignupScreen = () => {
+export const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function createUser() {
-    console.log(username, password);
+  async function createUser() {
+    try {
+      //TODO: Store email, passoword, username, diet in firestore
+      await createUserWithEmailAndPassword(auth, email, password);
+      console.log(user);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <MaterialIcons name="food-bank" size={100} color="black" />
-      <Text style={styles.title}>Signup</Text>
+      <Text style={styles.title}>Sign Up</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
+      ></TextInput>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
       ></TextInput>
       <TextInput
         style={styles.input}
@@ -116,5 +149,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 18,
+  },
+  error: {
+    margin: 12,
+    color: "red",
   },
 });

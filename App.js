@@ -4,7 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 // Import components/globals
 import { LoginScreen, SignupScreen } from "./components/AuthScreens";
-import { StartScreen } from "./components/StartScreen";
+import StartScreen from "./components/StartScreen";
+import HomeScreen from "./components/HomeScreen";
 
 const RootStack = createStackNavigator();
 
@@ -30,7 +31,9 @@ export default function App() {
             component={LoginScreen}
           />
         </RootStack.Group>
-        <RootStack.Group>{/* Add main app screens here */}</RootStack.Group>
+        <RootStack.Group>
+          <RootStack.Screen name="Home" component={HomeScreen} />
+        </RootStack.Group>
         <RootStack.Group screenOptions={{ presentation: "modal" }}>
           {/* Add modals here */}
         </RootStack.Group>
