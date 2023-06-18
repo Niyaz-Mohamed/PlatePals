@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 // Import components/globals
 import { LoginScreen, SignupScreen } from "./components/AuthScreens";
+import { StartScreen } from "./components/StartScreen";
 
 const RootStack = createStackNavigator();
 
@@ -12,9 +13,14 @@ export default function App() {
     <NavigationContainer>
       <RootStack.Navigator>
         <RootStack.Group>
+          <RootStack.Screen
+            name="Auth Start"
+            options={{ headerShown: false }}
+            component={StartScreen}
+          />
           {/* Add auth app screens here */}
           <RootStack.Screen
-            name="Signup"
+            name="Sign Up"
             options={{ headerShown: false }}
             component={SignupScreen}
           />

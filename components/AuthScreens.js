@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     margin: 12,
     padding: 10,
     justifyContent: "center",
-    borderRadius: 8,
+    borderRadius: 14,
     backgroundColor: globalSettings.mainColor,
     elevation: 3,
     zIndex: 0.5,
