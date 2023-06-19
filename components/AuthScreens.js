@@ -6,8 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import { ScrollView } from "react-native";
 // Import firebase and globals
-import globalSettings from "../global";
-import { auth } from "../firebase";
+import config from "../services/config";
+import { auth } from "../services/firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -51,7 +51,7 @@ export const LoginScreen = ({ navigation }) => {
       <Pressable
         style={styles.button}
         onPress={loginUser}
-        android_ripple={{ color: globalSettings.accentColor }}
+        android_ripple={{ color: config.accentColor }}
       >
         <Text style={styles.buttonText}>Submit</Text>
       </Pressable>
@@ -125,7 +125,7 @@ export const SignupScreen = ({ navigation }) => {
         data={diets}
         save="value"
         onSelect={() => console.log(selected)}
-        badgeStyles={{ backgroundColor: globalSettings.mainColor }}
+        badgeStyles={{ backgroundColor: config.mainColor }}
         boxStyles={{
           borderWidth: 5,
           borderColor: "black",
@@ -136,7 +136,7 @@ export const SignupScreen = ({ navigation }) => {
       <Pressable
         style={styles.button}
         onPress={createUser}
-        android_ripple={{ color: globalSettings.accentColor }}
+        android_ripple={{ color: config.accentColor }}
       >
         <Text style={styles.buttonText}>Submit</Text>
       </Pressable>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     borderRadius: 14,
-    backgroundColor: globalSettings.mainColor,
+    backgroundColor: config.mainColor,
     elevation: 3,
     zIndex: 0.5,
   },

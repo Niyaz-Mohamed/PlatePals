@@ -5,7 +5,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import globalSettings from "../global";
+import config from "../services/config";
 
 export default function StartScreen({ navigation }) {
   return (
@@ -18,7 +18,7 @@ export default function StartScreen({ navigation }) {
       <View style={styles.footer}>
         <Pressable
           style={[styles.button, styles.buttonFill]}
-          android_ripple={{ color: globalSettings.accentColor }}
+          android_ripple={{ color: config.accentColor }}
           onPress={() => {
             navigation.navigate("Login");
           }}
@@ -27,7 +27,7 @@ export default function StartScreen({ navigation }) {
         </Pressable>
         <Pressable
           style={[styles.button]}
-          android_ripple={{ color: globalSettings.accentColor }}
+          android_ripple={{ color: config.accentColor }}
           onPress={() => {
             navigation.navigate("Sign Up");
           }}
@@ -61,16 +61,16 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     borderRadius: 8,
-    borderColor: globalSettings.accentColor,
+    borderColor: config.accentColor,
     borderWidth: 5,
     justifyContent: "center",
   },
   buttonFill: {
-    backgroundColor: globalSettings.mainColor,
-    borderColor: globalSettings.mainColor,
+    backgroundColor: config.mainColor,
+    borderColor: config.mainColor,
   },
   buttonText: {
-    color: globalSettings.accentColor,
+    color: config.accentColor,
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 18,

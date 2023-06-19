@@ -10,7 +10,7 @@ import { LoginScreen, SignupScreen } from "./components/AuthScreens";
 import FoodScreen from "./components/FoodScreen";
 import ShareScreen from "./components/ShareScreen";
 import ChatScreen from "./components/ChatScreen";
-import globalSettings from "./global";
+import config from "./services/config";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,7 +34,7 @@ function MainTabs() {
           // You can return any component that you like here!
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: globalSettings.mainColor,
+        tabBarActiveTintColor: config.mainColor,
         tabBarInactiveTintColor: "gray",
         tabBarStyle: { height: 60, paddingBottom: 5 },
       })}
