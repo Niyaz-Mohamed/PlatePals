@@ -20,7 +20,7 @@ export const LoginScreen = ({ navigation }) => {
   async function loginUser() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Home");
+      navigation.navigate("Main Tabs");
     } catch (error) {
       error = JSON.parse(JSON.stringify(error))["code"].split("/")[1];
       console.log(error);
@@ -69,7 +69,7 @@ export const SignupScreen = ({ navigation }) => {
       //TODO: Store email, passoword, username, diet in firestore
       await createUserWithEmailAndPassword(auth, email, password);
       console.log(user);
-      navigation.navigate("Home");
+      navigation.navigate("Main Tabs");
     } catch (error) {
       console.log(error);
     }
