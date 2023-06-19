@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   button: {
-    width: "100%",
+    width: "90%",
     height: 60,
     justifyContent: "center",
     borderRadius: 14,
@@ -43,9 +43,8 @@ const styles = StyleSheet.create({
     top: 10,
   },
   listView: {
-    width: "100%",
-    padding: 10,
-    marginTop: 50,
+    width: "90%",
+    marginTop: 30,
     position: "relative",
     top: 30,
   },

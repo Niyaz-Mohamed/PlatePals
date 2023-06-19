@@ -67,16 +67,8 @@ export const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selected, setSelected] = useState([]);
+  const [diets, setDiets] = useState([]);
   const [errorText, setErrorText] = useState("");
-
-  const diets = [
-    { key: "1", value: "Vegetarian" },
-    { key: "2", value: "Vegan" },
-    { key: "3", value: "Halal" },
-    { key: "5", value: "Gluten-Free" },
-    { key: "6", value: "No Restrictions" },
-  ];
 
   async function createUser() {
     try {
@@ -89,7 +81,7 @@ export const SignupScreen = ({ navigation }) => {
         uid: auth.currentUser.uid,
         username: username,
         email: email,
-        diet: selected,
+        diet: diets,
       });
       console.log("user added");
       navigation.navigate("Main Tabs");
@@ -128,18 +120,18 @@ export const SignupScreen = ({ navigation }) => {
       ></TextInput>
       {/* Diet Selection List */}
       <MultipleSelectList
-        setSelected={(val) => setSelected(val)}
+        setSelected={(val) => setDiets(val)}
         placeholder="Dietary Restrictions"
         label="Dietary Restrictions"
-        data={diets}
+        data={config.diets}
         save="value"
-        onSelect={() => console.log(selected)}
         badgeStyles={{ backgroundColor: config.mainColor }}
         boxStyles={{
           borderWidth: 5,
           borderColor: "black",
           margin: 12,
           minHeight: 60,
+          alignItems: "center",
         }}
       />
       <Pressable
