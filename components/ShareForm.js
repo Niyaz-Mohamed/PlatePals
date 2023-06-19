@@ -1,3 +1,4 @@
+// Import modules
 import React, { useState } from "react";
 import {
   Text,
@@ -10,7 +11,9 @@ import {
 } from "react-native";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import * as ImagePicker from "expo-image-picker";
+import { addDoc, collection } from "firebase/firestore";
 import config from "../services/config";
+import { auth, db } from "../services/firebase";
 
 // TODO: Add location input
 export default function ShareForm({ navigation }) {
@@ -19,6 +22,9 @@ export default function ShareForm({ navigation }) {
   const [hoursValid, setHoursValid] = useState("");
   const [image, setImage] = useState(null);
 
+  // Get perms
+  // Shows the pop-up asking for permissions to access media
+
   async function pickImage() {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -26,16 +32,31 @@ export default function ShareForm({ navigation }) {
       aspect: [4, 3],
       quality: 1,
     });
-
     console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
   }
 
-  function createShare() {
-    console.log(food, diets, hoursValid, image);
+  // Connect to firebase
+  async function createShare() {
+    try {
+      const expiryTime = Date(
+        Date.UTC() + 100 * 60 * 60 * parseInt(hoursValid)
+      );
+      await addDoc(collection(db, "shares"), {
+        sharerID: auth.currentUser.uid,
+        foods: food,
+        diet: diets,
+        image,
+        expiryTime,
+        valid: true,
+      });
+      navigation.navigate("Share");
+    } catch (error) {
+      console.log(error);
+      setErrorText(error);
+    }
   }
 
   return (
@@ -79,7 +100,11 @@ export default function ShareForm({ navigation }) {
         value={hoursValid}
         onChangeText={setHoursValid}
       ></TextInput>
-      <Pressable style={styles.button} onPress={pickImage}>
+      <Pressable
+        style={styles.button}
+        onPress={pickImage}
+        android_ripple={{ color: config.accentColor }}
+      >
         <Text style={styles.buttonText}>Select Image to display</Text>
       </Pressable>
       {image && (
@@ -88,7 +113,11 @@ export default function ShareForm({ navigation }) {
           style={{ width: 250, height: 250, borderRadius: 16 }}
         />
       )}
-      <Pressable style={styles.button} onPress={createShare}>
+      <Pressable
+        style={styles.button}
+        onPress={createShare}
+        android_ripple={{ color: config.accentColor }}
+      >
         <Text style={styles.buttonText}>Share!</Text>
       </Pressable>
       <View style={{ width: "100%", height: 40 }}></View>

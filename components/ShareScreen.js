@@ -2,7 +2,7 @@ import React from "react";
 import { Text, StyleSheet, Pressable, Card, View } from "react-native";
 import config from "../services/config";
 
-export default function ChatScreen({ navigation, route }) {
+export default function ShareScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       <Pressable

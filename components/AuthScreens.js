@@ -73,17 +73,12 @@ export const SignupScreen = ({ navigation }) => {
   async function createUser() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      console.log("user created");
-      const user = auth.currentUser;
-      console.log(user);
-      console.log(typeof user);
       await addDoc(collection(db, "users"), {
         uid: auth.currentUser.uid,
-        username: username,
-        email: email,
+        username,
+        email,
         diet: diets,
       });
-      console.log("user added");
       navigation.navigate("Main Tabs");
     } catch (error) {
       console.log(error);
