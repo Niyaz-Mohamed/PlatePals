@@ -13,7 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import config from "../services/config";
 
 // TODO: Add location input
-export default function ChatScreen({ navigation }) {
+export default function ShareForm({ navigation }) {
   const [food, setFood] = useState("");
   const [diets, setDiets] = useState([]);
   const [hoursValid, setHoursValid] = useState("");

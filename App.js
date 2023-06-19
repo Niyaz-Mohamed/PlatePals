@@ -1,9 +1,10 @@
 // Import modules
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
+import { onAuthStateChanged } from "firebase/auth";
 // Import components/globals
 import StartScreen from "./components/StartScreen";
 import { LoginScreen, SignupScreen } from "./components/AuthScreens";
@@ -12,11 +13,19 @@ import ShareScreen from "./components/ShareScreen";
 import ShareForm from "./components/ShareForm";
 import ChatScreen from "./components/ChatScreen";
 import config from "./services/config";
+import { auth } from "./services/firebase";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function MainTabs() {
+function MainTabs({ navigation }) {
+  // Check login state
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) navigation.navigate("Start");
+    });
+  });
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -72,7 +81,7 @@ export default function App() {
         {/* Authentication */}
         <Stack.Group>
           <Stack.Screen
-            name="Auth Start"
+            name="Start"
             options={{ headerShown: false }}
             component={StartScreen}
           />
