@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { MultipleSelectList } from "react-native-dropdown-select-list";
+import { ScrollView } from "react-native";
 // Import firebase and globals
 import globalSettings from "../global";
 import { auth } from "../firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 
 // Login with email and password
@@ -29,7 +32,7 @@ export const LoginScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { alignItems: "center" }]}>
       <MaterialIcons name="food-bank" size={100} color="black" />
       <Text style={styles.title}>Login</Text>
       <TextInput
@@ -63,20 +66,36 @@ export const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selected, setSelected] = useState([]);
+  const [errorText, setErrorText] = useState("");
+
+  const diets = [
+    { key: "1", value: "Vegetarian" },
+    { key: "2", value: "Vegan" },
+    { key: "3", value: "Halal" },
+    { key: "5", value: "Gluten-Free" },
+    { key: "6", value: "No Restrictions" },
+  ];
 
   async function createUser() {
     try {
-      //TODO: Store email, passoword, username, diet in firestore
       await createUserWithEmailAndPassword(auth, email, password);
-      console.log(user);
+      await updateProfile(auth.currentUser, {
+        username: username,
+      });
       navigation.navigate("Main Tabs");
     } catch (error) {
+      error = JSON.parse(JSON.stringify(error))["code"].split("/")[1];
       console.log(error);
+      setErrorText(error);
     }
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView
+      style={[styles.container, { paddingTop: 80 }]}
+      contentContainerStyle={{ alignItems: "center" }}
+    >
       <MaterialIcons name="food-bank" size={100} color="black" />
       <Text style={styles.title}>Sign Up</Text>
       <TextInput
@@ -98,6 +117,22 @@ export const SignupScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
       ></TextInput>
+      {/* Diet Selection List */}
+      <MultipleSelectList
+        setSelected={(val) => setSelected(val)}
+        placeholder="Dietary Restrictions"
+        label="Dietary Restrictions"
+        data={diets}
+        save="value"
+        onSelect={() => console.log(selected)}
+        badgeStyles={{ backgroundColor: globalSettings.mainColor }}
+        boxStyles={{
+          borderWidth: 5,
+          borderColor: "black",
+          margin: 12,
+          minHeight: 60,
+        }}
+      />
       <Pressable
         style={styles.button}
         onPress={createUser}
@@ -105,7 +140,10 @@ export const SignupScreen = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Submit</Text>
       </Pressable>
-    </SafeAreaView>
+      <Text style={styles.error}>
+        {errorText === "" ? "" : errorText.toString()}
+      </Text>
+    </ScrollView>
   );
 };
 
@@ -113,9 +151,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
     padding: 20,
-    paddingTop: 140,
+    paddingTop: 130,
   },
   title: {
     fontWeight: "bold",
