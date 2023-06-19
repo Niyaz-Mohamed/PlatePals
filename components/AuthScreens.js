@@ -1,5 +1,5 @@
 // Import modules
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,8 +11,9 @@ import { auth } from "../services/firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  updateProfile,
 } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../services/firebase";
 
 // Login with email and password
 export const LoginScreen = ({ navigation }) => {
@@ -80,13 +81,21 @@ export const SignupScreen = ({ navigation }) => {
   async function createUser() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(auth.currentUser, {
+      console.log("user created");
+      const user = auth.currentUser;
+      console.log(user);
+      console.log(typeof user);
+      await addDoc(collection(db, "users"), {
+        uid: auth.currentUser.uid,
         username: username,
+        email: email,
+        diet: selected,
       });
+      console.log("user added");
       navigation.navigate("Main Tabs");
     } catch (error) {
-      error = JSON.parse(JSON.stringify(error))["code"].split("/")[1];
       console.log(error);
+      error = JSON.parse(JSON.stringify(error))["code"].split("/")[1];
       setErrorText(error);
     }
   }

@@ -9,6 +9,7 @@ import StartScreen from "./components/StartScreen";
 import { LoginScreen, SignupScreen } from "./components/AuthScreens";
 import FoodScreen from "./components/FoodScreen";
 import ShareScreen from "./components/ShareScreen";
+import ShareForm from "./components/ShareForm";
 import ChatScreen from "./components/ChatScreen";
 import config from "./services/config";
 
@@ -62,6 +63,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        {/* Mains */}
+        <Stack.Screen
+          name="Main Tabs"
+          component={MainTabs}
+          options={{ headerShown: false }}
+        />
         {/* Authentication */}
         <Stack.Group>
           <Stack.Screen
@@ -81,13 +88,13 @@ export default function App() {
           />
         </Stack.Group>
         {/* Modals */}
-        <Stack.Group screenOptions={{ presentation: "modal" }}></Stack.Group>
-        {/* Mains */}
-        <Stack.Screen
-          name="Main Tabs"
-          component={MainTabs}
-          options={{ headerShown: false }}
-        />
+        <Stack.Group screenOptions={{ presentation: "modal" }}>
+          <Stack.Screen
+            name="Share Form"
+            options={{ headerShown: false }}
+            component={ShareForm}
+          ></Stack.Screen>
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );
