@@ -12,12 +12,11 @@ import config from "./config";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: config.firebaseKey,
-  authDomain: "platepals.firebaseapp.com",
-  projectId: "platepals",
-  storageBucket: "platepals.appspot.com",
-  messagingSenderId: "1050458721945",
-  appId: "1:1050458721945:web:7231db589be985500eb208",
-  measurementId: "G-Z484G7NYV5",
+  authDomain: "platepals-bb380.firebaseapp.com",
+  projectId: "platepals-bb380",
+  storageBucket: "platepals-bb380.appspot.com",
+  messagingSenderId: "472986729912",
+  appId: "1:472986729912:web:20ddd81e045e96be16634d",
 };
 
 // Initialize Firebase

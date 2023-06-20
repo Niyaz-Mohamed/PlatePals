@@ -21,13 +21,13 @@ export default function ChatScreen({ navigation }) {
   }, [isFocused]);
 
   async function getChats() {
-    const sharesRef = collection(db, "chats");
+    const chatsRef = collection(db, "chats");
     // TODO: Refactor to match Share Screen
     let chats = [];
 
     // Query active
     // TODO: Filter only chats belonging to a user
-    const chatQuery = query(sharesRef);
+    const chatQuery = query(chatsRef);
     const chatSnapshot = await getDocs(chatQuery);
     chatSnapshot.forEach((doc) => {
       chats.push(doc.data());
