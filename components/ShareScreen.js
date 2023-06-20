@@ -44,6 +44,7 @@ export default function ShareScreen({ navigation }) {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>{item.foods}</Text>
         <Text style={styles.cardItem}>Expiry Time: {expiryString}</Text>
+        <Image />
       </View>
     );
   }
@@ -65,7 +66,7 @@ export default function ShareScreen({ navigation }) {
         <FlatList
           data={activeShares}
           renderItem={renderShare}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item.shareId}
         />
       </View>
       <View style={[styles.listView, { marginTop: 0 }]}>
@@ -73,7 +74,7 @@ export default function ShareScreen({ navigation }) {
         <FlatList
           data={inactiveShares}
           renderItem={renderShare}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item.shareId}
         />
       </View>
     </View>

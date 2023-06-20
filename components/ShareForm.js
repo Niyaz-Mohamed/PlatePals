@@ -44,10 +44,10 @@ export default function ShareForm({ navigation }) {
     try {
       const expiryTime = new Date();
       expiryTime.setHours(expiryTime.getHours() + parseInt(hoursValid));
-      const _id = stringHash(Date() + auth.currentUser.uid);
+      const shareId = stringHash(Date() + auth.currentUser.uid);
       await addDoc(collection(db, "shares"), {
-        _id,
-        sharerID: auth.currentUser.uid,
+        shareId,
+        creatorID: auth.currentUser.uid,
         foods: food,
         diet: diets,
         image,
