@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
 import { onAuthStateChanged } from "firebase/auth";
+
 // Import components/globals
 import StartScreen from "./components/StartScreen";
 import { LoginScreen, SignupScreen } from "./components/AuthScreens";
@@ -13,8 +14,8 @@ import ShareScreen from "./components/ShareScreen";
 import ShareForm from "./components/ShareForm";
 import ChatScreen from "./components/ChatScreen";
 import SingleChat from "./components/SingleChat";
-import config from "./services/config";
 import { auth } from "./services/firebase";
+import config from "./services/config";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,12 +98,6 @@ export default function App() {
             component={LoginScreen}
           />
         </Stack.Group>
-        {/* Chat  */}
-        <Stack.Screen
-          name="Chat Room"
-          component={SingleChat}
-          options={{ headerShown: false }}
-        />
         {/* Modals */}
         <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen
@@ -110,6 +105,7 @@ export default function App() {
             options={{ headerShown: false }}
             component={ShareForm}
           ></Stack.Screen>
+          <Stack.Screen name="Chat Room" component={SingleChat} />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

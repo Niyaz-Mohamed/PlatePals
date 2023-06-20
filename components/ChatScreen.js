@@ -22,7 +22,6 @@ export default function ChatScreen({ navigation }) {
 
   async function getChats() {
     const chatsRef = collection(db, "chats");
-    // TODO: Refactor to match Share Screen
     let chats = [];
 
     // Query active
@@ -37,7 +36,6 @@ export default function ChatScreen({ navigation }) {
   }
 
   function renderChatroom({ item }) {
-    // TODO: Update description of each chat
     return (
       <Pressable
         onPress={() => {
@@ -51,7 +49,7 @@ export default function ChatScreen({ navigation }) {
           style={styles.profileImg}
         />
         <View style={styles.chatDetails}>
-          <Text style={styles.chatTitle}>{item.name}</Text>
+          <Text style={styles.chatTitle}>{item.getter.username}</Text>
           <Text style={styles.subtitle}>This person is a recepient</Text>
         </View>
       </Pressable>
@@ -88,7 +86,7 @@ const styles = StyleSheet.create({
     color: config.mainColor,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 14,
     color: "grey",
   },
   chatChip: {
