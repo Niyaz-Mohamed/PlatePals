@@ -3,69 +3,73 @@ import {
   Text,
   StyleSheet,
   View,
-  TouchableOpacity,
+  Pressable,
   FlatList,
   Image,
 } from "react-native";
-import { addDoc, collection } from "firebase/firestore";
-import config from "../services/config";
+import { useIsFocused } from "@react-navigation/native";
+import { collection, getDocs, query } from "firebase/firestore";
 import { auth, db } from "../services/firebase";
-import { FontAwesome } from "@expo/vector-icons";
-import { Background } from "@react-navigation/elements";
+import config from "../services/config";
 
 export default function ChatScreen({ navigation }) {
-  const [chats, setChats] = useState([
-    { name: "Dick", id: 0 },
-    { name: "Tom", id: 1 },
-    { name: "Harry", id: 2 },
-  ]);
-  // TODO: Fetch list of chats from db
+  const [chats, setChats] = useState([]);
+  const isFocused = useIsFocused();
 
-  function renderChat({ item }) {
-    let { name } = item;
+  useEffect(() => {
+    if (isFocused) getChats();
+  }, [isFocused]);
+
+  async function getChats() {
+    const sharesRef = collection(db, "chats");
+    // TODO: Refactor to match Share Screen
+    let chats = [];
+
+    // Query active
+    // TODO: Filter only chats belonging to a user
+    const chatQuery = query(sharesRef);
+    const chatSnapshot = await getDocs(chatQuery);
+    chatSnapshot.forEach((doc) => {
+      chats.push(doc.data());
+    });
+
+    setChats(chats);
+  }
+
+  function renderChatroom({ item }) {
+    // TODO: Update description of each chat
     return (
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
-          navigation.navigate("Chat Room", { ...item });
+          navigation.navigate("Chat Room", item);
         }}
         android_ripple={{ color: config.accentColor }}
-        style={{
-          margin: 2,
-          padding: 10,
-          flex: 1,
-          borderColor: "black",
-          borderWidth: 3,
-          flexDirection: "row",
-        }}
+        style={styles.chatChip}
       >
         <Image
           source={require("../assets/profile.jpg")}
-          style={{ width: 80, height: 80, borderRadius: 100 }}
+          style={styles.profileImg}
         />
-        <Text
-          style={{ fontSize: 30, textAlignVertical: "center", padding: 10 }}
-        >
-          {name}
-        </Text>
-      </TouchableOpacity>
+        <View style={styles.chatDetails}>
+          <Text style={styles.chatTitle}>{item.name}</Text>
+          <Text style={styles.subtitle}>This person is a recepient</Text>
+        </View>
+      </Pressable>
     );
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}> Inbox </Text>
-          <Text style={styles.subtitle}> 3 unread chats </Text>
-        </View>
-        <FontAwesome
-          name="search"
-          size={24}
-          color="black"
-          style={{ flex: 1, textAlign: "right", margin: 10 }}
-        />
+        <Text style={styles.title}> Inbox </Text>
+        <Text style={styles.subtitle}> {chats.length} active chats </Text>
       </View>
-      <FlatList style={styles.list} data={chats} renderItem={renderChat} />
+      <FlatList
+        style={styles.chatList}
+        data={chats}
+        renderItem={renderChatroom}
+        keyExtractor={(item) => item.chatID}
+      />
     </View>
   );
 }
@@ -75,32 +79,44 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    width: "100%",
-    padding: 10,
-    marginTop: 50,
-    flexDirection: "row",
-    borderBottomColor: "black",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  titleContainer: {
-    width: "100%",
-    flex: 1,
-  },
-  subtitle: {
-    width: "100%",
-    fontSize: 20,
-    textAlign: "left",
-    color: "grey",
+    margin: 20,
+    marginTop: 45,
   },
   title: {
-    width: "100%",
     fontWeight: "bold",
-    fontSize: 24,
-    textAlign: "left",
+    fontSize: 26,
     color: config.mainColor,
   },
-  list: {
+  subtitle: {
+    fontSize: 18,
+    color: "grey",
+  },
+  chatChip: {
     flex: 1,
-    width: "100%",
+    borderColor: config.mainColor,
+    backgroundColor: config.accentColor,
+    borderWidth: 1,
+    minHeight: 100,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 15,
+    margin: 0,
+  },
+  profileImg: {
+    height: "75%",
+    width: undefined,
+    aspectRatio: 1 / 1,
+    borderRadius: 45,
+  },
+  chatDetails: {
+    flex: 1,
+    justifyContent: "center",
+    marginLeft: 20,
+    height: "100%",
+  },
+  chatTitle: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: config.mainColor,
   },
 });

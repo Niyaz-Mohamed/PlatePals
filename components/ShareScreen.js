@@ -19,16 +19,15 @@ export default function ShareScreen({ navigation, route }) {
 
   async function getShares() {
     const sharesRef = collection(db, "shares");
-    let activeShares = [];
-    let inactiveShares = [];
+    setActiveShares([]);
+    setInactiveShares([]);
 
     // Query active
     const activeQuery = query(sharesRef, where("active", "==", true));
     const activeSnapshot = await getDocs(activeQuery);
     activeSnapshot.forEach((doc) => {
-      activeShares.push(doc.data());
+      setActiveShares([...activeShares, doc.data()]);
     });
-    setActiveShares(activeShares);
 
     // Query inactive
     const inactiveQuery = query(
@@ -38,9 +37,8 @@ export default function ShareScreen({ navigation, route }) {
     );
     const inactiveSnapshot = await getDocs(inactiveQuery);
     inactiveSnapshot.forEach((doc) => {
-      inactiveShares.push(doc.data());
+      setInactiveShares([...inactiveShares, doc.data()]);
     });
-    setInactiveShares(inactiveShares);
   }
 
   function renderShare({ item }) {
