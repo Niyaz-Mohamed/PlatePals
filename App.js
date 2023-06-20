@@ -12,6 +12,7 @@ import FoodScreen from "./components/FoodScreen";
 import ShareScreen from "./components/ShareScreen";
 import ShareForm from "./components/ShareForm";
 import ChatScreen from "./components/ChatScreen";
+import SingleChat from "./components/SingleChat";
 import config from "./services/config";
 import { auth } from "./services/firebase";
 
@@ -96,6 +97,12 @@ export default function App() {
             component={LoginScreen}
           />
         </Stack.Group>
+        {/* Chat  */}
+        <Stack.Screen
+          name="Chat Room"
+          component={SingleChat}
+          options={{ headerShown: false }}
+        />
         {/* Modals */}
         <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen
