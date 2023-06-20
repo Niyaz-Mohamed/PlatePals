@@ -1,33 +1,38 @@
 // Import modules
-import React, { useState, useEffect } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Pressable, StyleSheet, Text, TextInput } from "react-native";
+import React, { useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
-import { ScrollView } from "react-native";
-// Import firebase and globals
-import config from "../services/config";
-import { auth } from "../services/firebase";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../services/firebase";
 
-// Login with email and password
-export const LoginScreen = ({ navigation }) => {
+// Import globals
+import config from "../services/config";
+import { auth, db } from "../services/firebase";
+
+export function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorText, setErrorText] = useState("");
 
+  // Signs in an existing user with email and password
   async function loginUser() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigation.navigate("Main Tabs");
     } catch (error) {
-      error = JSON.parse(JSON.stringify(error))["code"].split("/")[1];
       console.log(error);
+      error = JSON.parse(JSON.stringify(error))["code"].split("/")[1];
       setErrorText(error);
     }
   }
@@ -61,15 +66,17 @@ export const LoginScreen = ({ navigation }) => {
       </Text>
     </SafeAreaView>
   );
-};
+}
 
-export const SignupScreen = ({ navigation }) => {
+export function SignupScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [diets, setDiets] = useState([]);
   const [errorText, setErrorText] = useState("");
 
+  // Create a new user, add to firebase auth
+  // Add extra details to firestore
   async function createUser() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -122,6 +129,7 @@ export const SignupScreen = ({ navigation }) => {
         save="value"
         badgeStyles={{ backgroundColor: config.mainColor }}
         boxStyles={{
+          width: 340,
           borderWidth: 5,
           borderColor: "black",
           margin: 12,
@@ -141,7 +149,7 @@ export const SignupScreen = ({ navigation }) => {
       </Text>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

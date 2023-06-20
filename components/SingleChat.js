@@ -1,6 +1,9 @@
+// Import modules
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
+
+// Import globals
 import config from "../services/config";
 
 export default function ChatScreen({ navigation, route }) {
@@ -25,6 +28,7 @@ export default function ChatScreen({ navigation, route }) {
   );
 }
 
+// TODO: Manage and remove unneeded styles
 const styles = StyleSheet.create({
   header: {
     width: "100%",
@@ -46,6 +50,7 @@ const styles = StyleSheet.create({
   giftedChat: {
     width: "100%",
     height: "100%",
+    maxHeight: 300,
     backgroundColor: "red",
   },
 });

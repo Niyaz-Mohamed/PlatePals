@@ -1,29 +1,35 @@
 // Import modules
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, Pressable, View, FlatList } from "react-native";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
-// Import objects
+import { collection, query, where, getDocs } from "firebase/firestore";
+
+// Import globals
 import config from "../services/config";
 import { auth, db } from "../services/firebase";
 
-export default function ShareScreen({ navigation, route }) {
+export default function ShareScreen({ navigation }) {
   [activeShares, setActiveShares] = useState([]);
   [inactiveShares, setInactiveShares] = useState([]);
   const isFocused = useIsFocused();
 
+  // Get shares on focus
   useEffect(() => {
     if (isFocused) getShares();
   }, [isFocused]);
 
+  // Get all active/inactive shares from firestore
   async function getShares() {
     const sharesRef = collection(db, "shares");
     setActiveShares([]);
     setInactiveShares([]);
 
     // Query active
-    const activeQuery = query(sharesRef, where("active", "==", true));
+    const activeQuery = query(
+      sharesRef,
+      where("active", "==", true),
+      where("creatorID", "==", auth.currentUser.uid)
+    );
     const activeSnapshot = await getDocs(activeQuery);
     activeSnapshot.forEach((doc) => {
       setActiveShares([...activeShares, doc.data()]);
@@ -41,9 +47,10 @@ export default function ShareScreen({ navigation, route }) {
     });
   }
 
+  // Render a card showing share details
   function renderShare({ item }) {
-    const e = new Date(item.expiryTime.seconds * 1000);
-    const expiryString = e.toUTCString().slice(0, -4);
+    const expiryDate = new Date(item.expiryTime.seconds * 1000);
+    const expiryString = expiryDate.toUTCString().slice(0, -4);
     const diet = item.diet.toString().replaceAll(",", ", ");
 
     return (

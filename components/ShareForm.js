@@ -12,9 +12,11 @@ import {
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import * as ImagePicker from "expo-image-picker";
 import { addDoc, collection } from "firebase/firestore";
+import stringHash from "string-hash";
+
+// Import globals
 import config from "../services/config";
 import { auth, db } from "../services/firebase";
-import stringHash from "string-hash";
 
 // TODO: Add location input
 export default function ShareForm({ navigation }) {
@@ -23,11 +25,8 @@ export default function ShareForm({ navigation }) {
   const [hoursValid, setHoursValid] = useState("");
   const [image, setImage] = useState(null);
 
-  // Get perms
-  // Shows the pop-up asking for permissions to access media
-
+  // Launches image library
   async function pickImage() {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
@@ -38,7 +37,7 @@ export default function ShareForm({ navigation }) {
     }
   }
 
-  // Connect to firebase
+  // Create a document in the 'shares' collection
   async function createShare() {
     try {
       const expiryTime = new Date();
@@ -85,7 +84,7 @@ export default function ShareForm({ navigation }) {
         save="value"
         badgeStyles={{ backgroundColor: config.mainColor }}
         boxStyles={{
-          width: 350,
+          width: 340,
           borderWidth: 5,
           borderColor: "black",
           margin: 12,

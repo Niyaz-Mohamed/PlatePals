@@ -1,3 +1,4 @@
+// Import modules
 import {
   ImageBackground,
   Pressable,
@@ -5,6 +6,8 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+
+// Import globals
 import config from "../services/config";
 
 export default function StartScreen({ navigation }) {

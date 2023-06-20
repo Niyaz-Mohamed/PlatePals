@@ -1,3 +1,4 @@
+// Import modules
 import React, { useState, useEffect } from "react";
 import {
   Text,
@@ -9,23 +10,26 @@ import {
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { collection, getDocs, query } from "firebase/firestore";
-import { auth, db } from "../services/firebase";
+
+// Import globals
 import config from "../services/config";
+import { db } from "../services/firebase";
 
 export default function ChatScreen({ navigation }) {
   const [chats, setChats] = useState([]);
   const isFocused = useIsFocused();
 
+  // Update chats
   useEffect(() => {
     if (isFocused) getChats();
   }, [isFocused]);
 
+  // Query firebase to get chats
   async function getChats() {
     const chatsRef = collection(db, "chats");
     let chats = [];
 
-    // Query active
-    // TODO: Filter only chats belonging to a user
+    // Create and send query
     const chatQuery = query(chatsRef);
     const chatSnapshot = await getDocs(chatQuery);
     chatSnapshot.forEach((doc) => {
