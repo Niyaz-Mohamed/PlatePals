@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import { addDoc, collection } from "firebase/firestore";
 import config from "../services/config";
 import { auth, db } from "../services/firebase";
+import stringHash from "string-hash";
 
 // TODO: Add location input
 export default function ShareForm({ navigation }) {
@@ -32,7 +33,6 @@ export default function ShareForm({ navigation }) {
       aspect: [4, 3],
       quality: 1,
     });
-    console.log(result);
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
@@ -41,16 +41,17 @@ export default function ShareForm({ navigation }) {
   // Connect to firebase
   async function createShare() {
     try {
-      const expiryTime = Date(
-        Date.UTC() + 100 * 60 * 60 * parseInt(hoursValid)
-      );
+      const expiryTime = new Date();
+      expiryTime.setHours(expiryTime.getHours() + parseInt(hoursValid));
+      const shareId = stringHash(Date() + auth.currentUser.uid);
       await addDoc(collection(db, "shares"), {
-        sharerID: auth.currentUser.uid,
+        shareId,
+        creatorID: auth.currentUser.uid,
         foods: food,
         diet: diets,
         image,
         expiryTime,
-        valid: true,
+        active: true,
       });
       navigation.navigate("Share");
     } catch (error) {
@@ -128,7 +129,7 @@ export default function ShareForm({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "101%",
+    width: "100%",
     padding: 20,
   },
   title: {
