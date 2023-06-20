@@ -3,13 +3,19 @@ import React from "react";
 import { Text, StyleSheet, Pressable, View, FlatList } from "react-native";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
 // Import objects
 import config from "../services/config";
-import { db } from "../services/firebase";
+import { auth, db } from "../services/firebase";
 
-export default function ShareScreen({ navigation }) {
+export default function ShareScreen({ navigation, route }) {
   [activeShares, setActiveShares] = useState([]);
   [inactiveShares, setInactiveShares] = useState([]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) getShares();
+  }, [isFocused]);
 
   async function getShares() {
     const sharesRef = collection(db, "shares");
@@ -25,7 +31,11 @@ export default function ShareScreen({ navigation }) {
     setActiveShares(activeShares);
 
     // Query inactive
-    const inactiveQuery = query(sharesRef, where("active", "==", false));
+    const inactiveQuery = query(
+      sharesRef,
+      where("active", "==", false),
+      where("creatorID", "==", auth.currentUser.uid)
+    );
     const inactiveSnapshot = await getDocs(inactiveQuery);
     inactiveSnapshot.forEach((doc) => {
       inactiveShares.push(doc.data());
@@ -33,18 +43,21 @@ export default function ShareScreen({ navigation }) {
     setInactiveShares(inactiveShares);
   }
 
-  useEffect(() => {
-    getShares();
-  }, []);
-
   function renderShare({ item }) {
     const e = new Date(item.expiryTime.seconds * 1000);
     const expiryString = e.toUTCString().slice(0, -4);
+    const diet = item.diet.toString().replaceAll(",", ", ");
+
     return (
       <View style={styles.card}>
         <Text style={styles.cardTitle}>{item.foods}</Text>
-        <Text style={styles.cardItem}>Expiry Time: {expiryString}</Text>
-        <Image />
+        <Text style={styles.cardItem}>
+          <Text style={{ fontWeight: "bold" }}>Expiry Time: </Text>{" "}
+          {expiryString}
+        </Text>
+        <Text style={styles.cardItem}>
+          <Text style={{ fontWeight: "bold" }}>Diets Followed: </Text> {diet}
+        </Text>
       </View>
     );
   }
