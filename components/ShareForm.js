@@ -62,6 +62,7 @@ export default function ShareForm({ navigation }) {
       setCurrentUser(userFetched);
     });
   }
+
   // Launches image library
   async function pickImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
