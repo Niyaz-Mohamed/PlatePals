@@ -1,5 +1,5 @@
 // Import modules
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   StyleSheet,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import * as ImagePicker from "expo-image-picker";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import stringHash from "string-hash";
 
 // Import globals
@@ -24,7 +24,27 @@ export default function ShareForm({ navigation }) {
   const [diets, setDiets] = useState([]);
   const [hoursValid, setHoursValid] = useState("");
   const [image, setImage] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
+  // Get current user
+  async function getCurrentUser() {
+    const userRef = collection(db, "users");
+    let userFetched = null;
+
+    // Query active
+    const userQuery = query(userRef, where("uid", "==", auth.currentUser.uid));
+    const userSnapshot = await getDocs(userQuery);
+    // Only 1 document should be returned
+    userSnapshot.forEach((doc) => {
+      userFetched = doc.data();
+      setCurrentUser(userFetched);
+    });
+  }
   // Launches image library
   async function pickImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -43,9 +63,10 @@ export default function ShareForm({ navigation }) {
       const expiryTime = new Date();
       expiryTime.setHours(expiryTime.getHours() + parseInt(hoursValid));
       const shareId = stringHash(Date() + auth.currentUser.uid).toString();
+      // TODO: refactor
       await addDoc(collection(db, "shares"), {
         shareId,
-        creatorID: auth.currentUser.uid,
+        creator: currentUser,
         foods: food,
         diet: diets,
         image,
