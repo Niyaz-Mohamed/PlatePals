@@ -37,7 +37,8 @@ export default function ShareDetails({ navigation, route }) {
     // Query chats for duplicates
     const chatQuery = query(
       chatRef,
-      where("getter.uid", "==", auth.currentUser.uid)
+      where("getter.uid", "==", auth.currentUser.uid),
+      where("share.shareId", "==", share.shareId)
     );
     const chatSnapshot = await getDocs(chatQuery);
     chatSnapshot.forEach((doc) => {
@@ -74,14 +75,15 @@ export default function ShareDetails({ navigation, route }) {
         currentUser = doc.data();
       });
 
-      await addDoc(collection(db, "chats"), {
+      // Add chat data to db
+      chatData = {
         chatId,
-        shareId: share.shareId,
+        share,
         getter: currentUser,
-        sharer: share.sharer,
         active: true,
-      });
-      navigation.navigate("Chat");
+      };
+      await addDoc(collection(db, "chats"), chatData);
+      navigation.navigate("Chat Room", chatData);
     } catch (error) {
       console.log(error);
     }
@@ -127,7 +129,6 @@ export default function ShareDetails({ navigation, route }) {
           style={styles.button}
           onPress={() => {
             createChat();
-            //navigation.navigate("Chat", { openChat: true });
           }}
           android_ripple={{ color: config.accentColor }}
         >
