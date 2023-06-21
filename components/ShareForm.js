@@ -34,6 +34,7 @@ export default function ShareForm({ navigation }) {
     if (isFocused) {
       getCurrentUser();
       getLocation();
+      console.log(location);
     }
   }, [isFocused]);
 
@@ -53,7 +54,7 @@ export default function ShareForm({ navigation }) {
     const userRef = collection(db, "users");
     let userFetched = null;
 
-    // Query active
+    // Query users
     const userQuery = query(userRef, where("uid", "==", auth.currentUser.uid));
     const userSnapshot = await getDocs(userQuery);
     // Only 1 document should be returned
@@ -84,7 +85,7 @@ export default function ShareForm({ navigation }) {
       // TODO: refactor
       await addDoc(collection(db, "shares"), {
         shareId,
-        creator: currentUser,
+        sharer: currentUser,
         location: location,
         foods: food,
         diet: diets,
@@ -115,22 +116,23 @@ export default function ShareForm({ navigation }) {
         value={food}
         onChangeText={setFood}
       ></TextInput>
-      <MultipleSelectList
-        setSelected={(val) => setDiets(val)}
-        placeholder="Dietary Tags"
-        label="Dietary Tags"
-        data={config.diets}
-        save="value"
-        badgeStyles={{ backgroundColor: config.mainColor }}
-        boxStyles={{
-          width: 340,
-          borderWidth: 5,
-          borderColor: "black",
-          margin: 12,
-          minHeight: 60,
-          alignItems: "center",
-        }}
-      />
+      <View style={{ width: "100%", margin: 15, marginBottom: 5 }}>
+        <MultipleSelectList
+          setSelected={(val) => setDiets(val)}
+          placeholder="Dietary Tags"
+          label="Dietary Tags"
+          data={config.diets}
+          save="value"
+          badgeStyles={{ backgroundColor: config.mainColor }}
+          boxStyles={{
+            width: 340,
+            borderWidth: 5,
+            borderColor: "black",
+            minHeight: 60,
+            alignItems: "center",
+          }}
+        />
+      </View>
       <TextInput
         style={styles.input}
         keyboardType="numeric"

@@ -1,14 +1,91 @@
 // Import modules
-import React from "react";
-import { View, StyleSheet, Text, ImageBackground } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ImageBackground,
+  Pressable,
+} from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import stringHash from "string-hash";
 
 // Import globals
 import config from "../services/config";
-import { Pressable } from "react-native";
+import { auth, db } from "../services/firebase";
 
 export default function ShareDetails({ navigation, route }) {
+  // Constants for constructing chat object
   const share = route.params;
   const expiryTime = new Date(share.expiryTime.seconds * 1000);
+  // State hooks
+  const [chatExists, setChatExists] = useState(true);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      checkCreatedChats();
+    }
+  }, [isFocused]);
+
+  // Get current user
+  async function checkCreatedChats() {
+    const chatRef = collection(db, "chats");
+    let chatsFetched = [];
+
+    // Query chats for duplicates
+    const chatQuery = query(
+      chatRef,
+      where("getter.uid", "==", auth.currentUser.uid)
+    );
+    const chatSnapshot = await getDocs(chatQuery);
+    chatSnapshot.forEach((doc) => {
+      chatsFetched.push(doc.data());
+    });
+
+    userOwned = share.sharer.uid === auth.currentUser.uid;
+    // Update existence of chat
+    if (userOwned || chatsFetched.length !== 0) {
+      setChatExists(true);
+    } else {
+      setChatExists(false);
+    }
+  }
+
+  // Create chat, only done by non-owners of the share
+  async function createChat() {
+    try {
+      const chatId = stringHash(
+        share.shareId + auth.currentUser.uid
+      ).toString();
+      let currentUser = null;
+
+      // Get current user's data
+      const userRef = collection(db, "users");
+      // Query users
+      const userQuery = query(
+        userRef,
+        where("uid", "==", auth.currentUser.uid)
+      );
+      const userSnapshot = await getDocs(userQuery);
+      // Only 1 document should be returned
+      userSnapshot.forEach((doc) => {
+        currentUser = doc.data();
+      });
+
+      await addDoc(collection(db, "chats"), {
+        chatId,
+        shareId: share.shareId,
+        getter: currentUser,
+        sharer: share.sharer,
+        active: true,
+      });
+      navigation.navigate("Chat");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -24,11 +101,11 @@ export default function ShareDetails({ navigation, route }) {
           <Text style={styles.subtitle}>Sharer Details</Text>
           <Text style={styles.text}>
             <Text style={styles.textHighlight}>Username: </Text>
-            {share.creator.username}
+            {share.sharer.username}
           </Text>
           <Text style={styles.text}>
             <Text style={styles.textHighlight}>Diet(s) Followed: </Text>
-            {share.creator.diet.toString().replace(",", ", ")}
+            {share.sharer.diet.toString().replace(",", ", ")}
           </Text>
           {/* Food details */}
           <Text style={styles.subtitle}>Offer Details</Text>
@@ -43,15 +120,20 @@ export default function ShareDetails({ navigation, route }) {
         </View>
       </ImageBackground>
       {/* Button to begin chat */}
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate("Chat", { openChat: true });
-        }}
-        android_ripple={{ color: config.accentColor }}
-      >
-        <Text style={styles.buttonText}>Chat with the Sharer</Text>
-      </Pressable>
+      {chatExists ? (
+        ""
+      ) : (
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            createChat();
+            //navigation.navigate("Chat", { openChat: true });
+          }}
+          android_ripple={{ color: config.accentColor }}
+        >
+          <Text style={styles.buttonText}>Chat with the Sharer</Text>
+        </Pressable>
+      )}
     </View>
   );
 }

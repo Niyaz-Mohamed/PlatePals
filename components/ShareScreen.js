@@ -28,7 +28,7 @@ export default function ShareScreen({ navigation }) {
     const activeQuery = query(
       sharesRef,
       where("active", "==", true),
-      where("creator.uid", "==", auth.currentUser.uid)
+      where("sharer.uid", "==", auth.currentUser.uid)
     );
     const activeSnapshot = await getDocs(activeQuery);
     activeSnapshot.forEach((doc) => {
@@ -39,7 +39,7 @@ export default function ShareScreen({ navigation }) {
     const inactiveQuery = query(
       sharesRef,
       where("active", "==", false),
-      where("creatorID", "==", auth.currentUser.uid)
+      where("sharer.uid", "==", auth.currentUser.uid)
     );
     const inactiveSnapshot = await getDocs(inactiveQuery);
     inactiveSnapshot.forEach((doc) => {

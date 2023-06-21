@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   ScrollView,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
@@ -121,22 +122,22 @@ export function SignupScreen({ navigation }) {
         onChangeText={setPassword}
       ></TextInput>
       {/* Diet Selection List */}
-      <MultipleSelectList
-        setSelected={(val) => setDiets(val)}
-        placeholder="Dietary Restrictions"
-        label="Dietary Restrictions"
-        data={config.diets}
-        save="value"
-        badgeStyles={{ backgroundColor: config.mainColor }}
-        boxStyles={{
-          width: 340,
-          borderWidth: 5,
-          borderColor: "black",
-          margin: 12,
-          minHeight: 60,
-          alignItems: "center",
-        }}
-      />
+      <View style={{ width: "100%", margin: 12 }}>
+        <MultipleSelectList
+          setSelected={(val) => setDiets(val)}
+          placeholder="Dietary Restrictions"
+          label="Dietary Restrictions"
+          data={config.diets}
+          save="value"
+          badgeStyles={{ backgroundColor: config.mainColor }}
+          boxStyles={{
+            borderWidth: 5,
+            borderColor: "black",
+            minHeight: 60,
+            alignItems: "center",
+          }}
+        />
+      </View>
       <Pressable
         style={styles.button}
         onPress={createUser}

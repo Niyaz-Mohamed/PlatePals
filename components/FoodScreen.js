@@ -40,7 +40,7 @@ export default function FoodScreen({ navigation }) {
     // Query active non-owned shares
     const sharesQuery = query(
       sharesRef,
-      where("creator.uid", "!=", auth.currentUser.uid),
+      where("sharer.uid", "!=", auth.currentUser.uid),
       where("active", "==", true)
     );
     const sharesSnapshot = await getDocs(sharesQuery);
@@ -71,7 +71,6 @@ export default function FoodScreen({ navigation }) {
             title={"Your Location"}
             onPress={(e) => {
               coord = e.nativeEvent.coordinate;
-              console.log(coord);
             }}
           />
           {shares.map((share) => {
