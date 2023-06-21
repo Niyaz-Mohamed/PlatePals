@@ -16,6 +16,7 @@ import ChatScreen from "./components/ChatScreen";
 import SingleChat from "./components/SingleChat";
 import { auth } from "./services/firebase";
 import config from "./services/config";
+import ShareDetails from "./components/ShareDetails";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,6 +98,10 @@ export default function App() {
             name="Share Form"
             options={{ headerShown: false }}
             component={ShareForm}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Share Details"
+            component={ShareDetails}
           ></Stack.Screen>
           <Stack.Screen name="Chat Room" component={SingleChat} />
         </Stack.Group>

@@ -10,7 +10,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import config from "../services/config";
 import { auth, db } from "../services/firebase";
 
-export default function FoodScreen() {
+export default function FoodScreen({ navigation }) {
   const [location, setLocation] = useState(null);
   const [shares, setShares] = useState([]);
   const isFocused = useIsFocused();
@@ -68,6 +68,7 @@ export default function FoodScreen() {
               longitude: location.longitude,
             }}
             pinColor={config.mainColor}
+            title={"Your Location"}
             onPress={(e) => {
               coord = e.nativeEvent.coordinate;
               console.log(coord);
@@ -82,8 +83,15 @@ export default function FoodScreen() {
                 }}
                 pinColor="blue"
                 onPress={(e) => {
-                  coord = e.nativeEvent.coordinate;
-                  console.log(coord);
+                  // Find a share matching coordinates
+                  coords = e.nativeEvent.coordinate;
+                  share = shares.find(
+                    (share) =>
+                      share.location.latitude === coords.latitude &&
+                      share.location.longitude === coords.longitude
+                  );
+                  // Open approppriate modal
+                  navigation.navigate("Share Details", share);
                 }}
               />
             );
