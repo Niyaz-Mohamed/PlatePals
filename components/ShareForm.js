@@ -10,9 +10,11 @@ import {
   ScrollView,
 } from "react-native";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
+import { useIsFocused } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import stringHash from "string-hash";
+import * as Location from "expo-location";
 
 // Import globals
 import config from "../services/config";
@@ -26,10 +28,25 @@ export default function ShareForm({ navigation }) {
   const [image, setImage] = useState(null);
   const [location, setLocation] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    getCurrentUser();
-  }, []);
+    if (isFocused) {
+      getCurrentUser();
+      getLocation();
+    }
+  }, [isFocused]);
+
+  async function getLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Error, permission not granted");
+      navigation.navigate("Share");
+    }
+
+    let locationFetched = await Location.getCurrentPositionAsync({});
+    setLocation(locationFetched.coords);
+  }
 
   // Get current user
   async function getCurrentUser() {
@@ -67,6 +84,7 @@ export default function ShareForm({ navigation }) {
       await addDoc(collection(db, "shares"), {
         shareId,
         creator: currentUser,
+        location: location,
         foods: food,
         diet: diets,
         image,
@@ -76,7 +94,6 @@ export default function ShareForm({ navigation }) {
       navigation.navigate("Share");
     } catch (error) {
       console.log(error);
-      setErrorText(error);
     }
   }
 
