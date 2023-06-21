@@ -20,14 +20,7 @@ import config from "./services/config";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function MainTabs({ navigation }) {
-  // Check login state
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (!user) navigation.navigate("Start");
-    });
-  });
-
+function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -74,12 +67,6 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* Mains */}
-        <Stack.Screen
-          name="Main Tabs"
-          component={MainTabs}
-          options={{ headerShown: false }}
-        />
         {/* Authentication */}
         <Stack.Group>
           <Stack.Screen
@@ -98,6 +85,12 @@ export default function App() {
             component={LoginScreen}
           />
         </Stack.Group>
+        {/* Mains */}
+        <Stack.Screen
+          name="Main Tabs"
+          component={MainTabs}
+          options={{ headerShown: false }}
+        />
         {/* Modals */}
         <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen

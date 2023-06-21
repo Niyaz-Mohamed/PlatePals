@@ -1,4 +1,5 @@
 // Import modules
+import { useEffect } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -6,11 +7,19 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-
+import { onAuthStateChanged } from "firebase/auth";
 // Import globals
 import config from "../services/config";
+import { auth } from "../services/firebase";
 
 export default function StartScreen({ navigation }) {
+  // Check login state
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) navigation.navigate("Main Tabs");
+    });
+  }, []);
+
   return (
     <ImageBackground
       source={require("../assets/bento.png")}
