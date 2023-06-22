@@ -74,26 +74,28 @@ export default function FoodScreen({ navigation }) {
             }}
           />
           {shares.map((share) => {
-            return (
-              <Marker
-                coordinate={{
-                  latitude: share.location.latitude,
-                  longitude: share.location.longitude,
-                }}
-                pinColor="blue"
-                onPress={(e) => {
-                  // Find a share matching coordinates
-                  coords = e.nativeEvent.coordinate;
-                  share = shares.find(
-                    (share) =>
-                      share.location.latitude === coords.latitude &&
-                      share.location.longitude === coords.longitude
-                  );
-                  // Open approppriate modal
-                  navigation.navigate("Share Details", share);
-                }}
-              />
-            );
+            if (share) {
+              return (
+                <Marker
+                  coordinate={{
+                    latitude: share.location.latitude,
+                    longitude: share.location.longitude,
+                  }}
+                  pinColor="blue"
+                  onPress={(e) => {
+                    // Find a share matching coordinates
+                    coords = e.nativeEvent.coordinate;
+                    share = shares.find(
+                      (share) =>
+                        share.location.latitude === coords.latitude &&
+                        share.location.longitude === coords.longitude
+                    );
+                    // Open approppriate modal
+                    navigation.navigate("Share Details", share);
+                  }}
+                />
+              );
+            }
           })}
         </MapView>
       ) : (

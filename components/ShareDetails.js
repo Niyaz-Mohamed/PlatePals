@@ -132,7 +132,9 @@ export default function ShareDetails({ navigation, route }) {
           }}
           android_ripple={{ color: config.accentColor }}
         >
-          <Text style={styles.buttonText}>Chat with the Sharer</Text>
+          <Text style={styles.buttonText}>
+            Chat with {share.sharer.username}
+          </Text>
         </Pressable>
       )}
     </View>

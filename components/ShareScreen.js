@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, Pressable, View, FlatList } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { AntDesign } from "@expo/vector-icons";
 
 // Import globals
 import config from "../services/config";
@@ -54,31 +55,36 @@ export default function ShareScreen({ navigation }) {
     const diet = item.diet.toString().replaceAll(",", ", ");
 
     return (
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>{item.foods}</Text>
-        <Text style={styles.cardItem}>
-          <Text style={{ fontWeight: "bold" }}>Expiry Time: </Text>{" "}
-          {expiryString}
-        </Text>
-        <Text style={styles.cardItem}>
-          <Text style={{ fontWeight: "bold" }}>Diets Followed: </Text> {diet}
-        </Text>
-      </View>
+      <Pressable
+        style={styles.card}
+        onPress={() => {
+          navigation.navigate("Share Details", item);
+        }}
+      >
+        <View style={styles.cardContent}>
+          <Text style={styles.cardTitle}>{item.foods}</Text>
+          <Text style={styles.cardItem}>
+            <Text style={{ fontWeight: "bold" }}>Expiry Time: </Text>{" "}
+            {expiryString}
+          </Text>
+          <Text style={styles.cardItem}>
+            <Text style={{ fontWeight: "bold" }}>Diets Followed: </Text> {diet}
+          </Text>
+        </View>
+        <View style={styles.arrowContainer}>
+          <AntDesign
+            name="caretright"
+            size={24}
+            color="black"
+            style={{ color: "black" }}
+          />
+        </View>
+      </Pressable>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate("Share Form");
-        }}
-        android_ripple={{ color: config.accentColor }}
-      >
-        <Text style={styles.buttonText}>Share some food!</Text>
-      </Pressable>
-
       <View style={styles.listView}>
         <Text style={styles.title}> Active Shares</Text>
         <FlatList
@@ -95,6 +101,15 @@ export default function ShareScreen({ navigation }) {
           keyExtractor={(item) => item.shareId}
         />
       </View>
+      <Pressable
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate("Share Form");
+        }}
+        android_ripple={{ color: config.accentColor }}
+      >
+        <Text style={styles.buttonText}>Share some food!</Text>
+      </Pressable>
     </View>
   );
 }
@@ -104,7 +119,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     padding: 10,
-    marginTop: 50,
   },
   button: {
     width: "90%",
@@ -114,11 +128,11 @@ const styles = StyleSheet.create({
     backgroundColor: config.mainColor,
     elevation: 3,
     position: "absolute",
-    top: 10,
+    bottom: 20,
   },
   listView: {
     width: "90%",
-    marginTop: 30,
+    marginTop: 10,
     position: "relative",
     top: 30,
   },
@@ -134,7 +148,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 24,
     textAlign: "left",
-    color: config.mainColor,
+    color: "black",
   },
   card: {
     width: "100%",
@@ -142,21 +156,29 @@ const styles = StyleSheet.create({
     elevation: 3,
     alignContent: "center",
     marginTop: 15,
-    padding: 15,
+    padding: 10,
     borderRadius: 14,
     borderColor: config.mainColor,
     borderWidth: 3,
+    flexDirection: "row",
+  },
+  cardContent: {
+    flex: 10,
   },
   cardTitle: {
     fontWeight: "bold",
     fontSize: 18,
     textAlign: "left",
-    color: config.mainColor,
+    color: "black",
     marginBottom: 5,
   },
   cardItem: {
     fontSize: 14,
     textAlign: "left",
     color: "black",
+  },
+  arrowContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
 });
