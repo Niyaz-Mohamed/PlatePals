@@ -142,11 +142,13 @@ export default function ShareForm({ navigation }) {
         onChangeText={setHoursValid}
       ></TextInput>
       <Pressable
-        style={styles.button}
+        style={[styles.button, { backgroundColor: config.accentColor }]}
         onPress={pickImage}
         android_ripple={{ color: config.accentColor }}
       >
-        <Text style={styles.buttonText}>Select Image to display</Text>
+        <Text style={[styles.buttonText, { color: "black" }]}>
+          Select Image to display
+        </Text>
       </Pressable>
       {image && (
         <Image
