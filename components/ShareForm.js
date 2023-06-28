@@ -34,7 +34,6 @@ export default function ShareForm({ navigation }) {
     if (isFocused) {
       getCurrentUser();
       getLocation();
-      console.log(location);
     }
   }, [isFocused]);
 

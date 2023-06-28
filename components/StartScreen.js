@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { onAuthStateChanged } from "firebase/auth";
+
 // Import globals
 import config from "../services/config";
 import { auth } from "../services/firebase";
